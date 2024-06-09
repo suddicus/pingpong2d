@@ -24,7 +24,7 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
     private GameThread mGame;
     private TextView mStatus;
     private TextView mScorePlayer;
-    private TextView mSCoreOpponent;
+    private TextView mScoreOpponent;
 
     private Player mPlayer;
     private Player mOpponent;
@@ -62,7 +62,7 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
                 mScorePlayer.setText(msg.getData().getString("player"));
-                mSCoreOpponent.setText(msg.getData().getString("opponent"));
+                mScoreOpponent.setText(msg.getData().getString("opponent"));
             }
         });
 
@@ -81,7 +81,7 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
         Paint opponentPaint = new Paint();
         opponentPaint.setAntiAlias(true);
         opponentPaint.setColor(ContextCompat.getColor(mContext,R.color.opponent_color));
-        mOpponent = new Player(racketWidth,racketHeight,playerPaint);
+        mOpponent = new Player(racketWidth,racketHeight,opponentPaint);
 
         // Set Ball
         Paint ballPaint = new Paint();
@@ -138,18 +138,30 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
-
+        mGame.setRunning(true);
+        mGame.start();
     }
 
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
         mTableWidth = width;
         mTableHeight = height;
+
+        mGame.setUpNewRound();
     }
 
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
-
+        boolean retry = true;
+        mGame.setRunning(false);
+        while(retry){
+            try {
+                mGame.join();
+                retry = false;
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
     }
 
     private void doAI(){
@@ -210,6 +222,10 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
         return mPlayer.bounds.contains(event.getX(),event.getY());
     }
 
+    public GameThread getGame(){
+        return mGame;
+    }
+
     public void movePlayerRacquet(float dy,Player player){
         synchronized (mHolder){
             movePlayer(player,player.bounds.left,player.bounds.top + dy);
@@ -247,5 +263,8 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
         mBall.velocity_x = (mBall.velocity_x / Math.abs(mBall.velocity_x) * PHY_BALL_SPEED);
     }
 
+    public void setScorePlayer(TextView view){mScorePlayer = view;}
+    public void setScoreOpponent(TextView view){mScoreOpponent = view;}
+    public void setStatus(TextView view){mStatus = view;}
 
 }

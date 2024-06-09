@@ -9,7 +9,7 @@
     tools:context=".PongActivity">
 
     <com.jhin.pong2dgame.PongTable
-        android:id="@+id/PongTable"
+        android:id="@+id/pongTable"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="2dp"
@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/tvStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="350dp"
