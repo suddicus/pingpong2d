@@ -56,13 +56,13 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
         // Set Opponent
         Paint opponentPaint = new Paint();
         opponentPaint.setAntiAlias(true);
-        opponentPaint.setColor(ContextCompat.getColor(mContext,R.color.player_color));
-        mPlayer = new Player(racketWidth,racketHeight,playerPaint);
+        opponentPaint.setColor(ContextCompat.getColor(mContext,R.color.opponent_color));
+        mOpponent = new Player(racketWidth,racketHeight,playerPaint);
 
         // Set Ball
         Paint ballPaint = new Paint();
         ballPaint.setAntiAlias(true);
-        ballPaint.setColor(ContextCompat.getColor(mContext,R.color.player_color));
+        ballPaint.setColor(ContextCompat.getColor(mContext,R.color.ball_color));
         mBall = new Ball(ballRadius,ballPaint);
 
         // Draw Middle Lines
@@ -77,7 +77,7 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
         // Draw Bounds
         mTableBoundsPaint = new Paint();
         mTableBoundsPaint.setAntiAlias(true);
-        mTableBoundsPaint.setColor(Color.BLACK);
+        mTableBoundsPaint.setColor(ContextCompat.getColor(mContext,R.color.table_color));
         mTableBoundsPaint.setStyle(Paint.Style.STROKE);
         mTableBoundsPaint.setStrokeWidth(15.f);
 
@@ -154,7 +154,7 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
         if(left < 2){
             left = 2 ;
         }else if(left + player.getRacquetWidth() >= mTableWidth - 2){
-            top = mTableHeight - player.getRacquetWidth() - 2;
+            top = mTableWidth - player.getRacquetWidth() - 2;
         }
         if(top < 0){
             top = 0;
