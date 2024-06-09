@@ -31,9 +31,9 @@
         android:layout_marginEnd="150dp"
         android:layout_marginBottom="360dp"
         android:text="Player"
-        android:textStyle="bold"
-        android:textSize="25sp"
         android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tvScoreOpponent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,14 +48,13 @@
         android:layout_marginEnd="88dp"
         android:layout_marginBottom="360dp"
         android:text="Opponent"
-        android:textStyle="bold"
-        android:textSize="25sp"
         android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvScorePlayer"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView3"
