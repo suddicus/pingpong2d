@@ -56,7 +56,7 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
         // Set Opponent
         Paint opponentPaint = new Paint();
         opponentPaint.setAntiAlias(true);
-        opponentPaint.setColor(ContextCompat.getColor((mContext,R.color.player_color)));
+        opponentPaint.setColor(ContextCompat.getColor(mContext,R.color.player_color));
         mPlayer = new Player(racketWidth,racketHeight,playerPaint);
 
         // Set Ball
@@ -129,7 +129,11 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     private void doAi(){
-
+        if(mOpponent.bounds.top > mBall.cy){
+            movePlayer(mOpponent,mOpponent.bounds.left,mOpponent.bounds.top - PHY_RACQUET_SPEED);
+        }else if(mOpponent.bounds.top + mOpponent.getRacquetHeight() < mBall.cy){
+            movePlayer(mOpponent,mOpponent.bounds.left,mOpponent.bounds.top + PHY_RACQUET_SPEED);
+        }
     }
 
     @Override
@@ -142,9 +146,22 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     public void movePlayerRacquet(float dy,Player player){
-
+        synchronized (mHolder){
+            movePlayer(player,player.bounds.left,player.bounds.top + dy);
+        }
     }
     public synchronized void movePlayer(Player player, float left, float top){
+        if(left < 2){
+            left = 2 ;
+        }else if(left + player.getRacquetWidth() >= mTableWidth - 2){
+            top = mTableHeight - player.getRacquetWidth() - 2;
+        }
+        if(top < 0){
+            top = 0;
+        }else if(top + player.getRacquetHeight() >= mTableHeight){
+            top = mTableHeight - player.getRacquetHeight() - 1;
+        }
 
+        player.bounds.offsetTo(left,top);
     }
 }
