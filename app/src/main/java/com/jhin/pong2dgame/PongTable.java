@@ -2,10 +2,12 @@ package com.jhin.pong2dgame;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -20,6 +22,8 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
     private Paint mNetPaint;
     private Paint mTableBoundsPaint;
     private int mTableHeight;
+    private int mTableWidth;
+    private Context mContext;
 
     SurfaceHolder mHolder;
 
@@ -81,12 +85,31 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
 
     }
 
+    @Override
+    protected void onDraw(Canvas canvas){
+        super.onDraw(canvas);
+
+        canvas.drawColor(ContextCompat.getColor(mContext,R.color.table_color));
+        canvas.drawRect(0,0,mTableWidth,mTableHeight,mTableBoundsPaint);
+
+        int middle = mTableWidth/2;
+        canvas.drawLine(middle,1,middle, mTableHeight-1,mNetPaint);
+
+        mPlayer.draw(canvas);
+        mOpponent.draw(canvas);
+        mBall.draw(canvas);
+    }
+
     public PongTable(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        initPongTable(context,attrs);
     }
 
     public PongTable(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        initPongTable(context,attrs);
     }
 
     @Override
@@ -96,11 +119,28 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
 
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
-
+        mTablewidth = width;
+        mTableHeight = height;
     }
 
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        return super.onTouchEvent(event);
+    }
+
+    private boolean isTouchOnRacket(MotionEvent event, Player mPlayer){
+        return mPlayer.bounds.contains(event.getX(),event.getY());
+    }
+
+    public void movePlayerRacquet(){
+
+    }
+    public synchronized void movePlayer(Player player, float left, float top){
 
     }
 }

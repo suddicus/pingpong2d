@@ -13,10 +13,10 @@ public class Ball {
     private Paint paint;
 
     public Ball(int radius, Paint paint) {
-        this.cx = cx;
-        this.cy = cy;
-        this.velocity_x = velocity_x;
-        this.velocity_y = velocity_y;
+        this.paint = paint;
+        this.radius = radius;
+        this.velocity_x = PongTable.PHY_BALL_SPEED;
+        this.velocity_y = PongTable.PHY_BALL_SPEED;
     }
 
     public void draw(Canvas canvas){
