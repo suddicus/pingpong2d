@@ -6,15 +6,25 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
+import java.util.Random;
+
 public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
+
+    private GameThread mGame;
+    private TextView mStatus;
+    private TextView mScorePlayer;
+    private TextView mSCoreOpponent;
 
     private Player mPlayer;
     private Player mOpponent;
@@ -40,7 +50,21 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
         mHolder = getHolder();
         mHolder.addCallback(this);
 
-        // Game Thread/Game Loop Initialize
+        mGame = new GameThread(this.getContext(),mHolder,this,new Handler(){
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                super.handleMessage(msg);
+                mStatus.setVisibility(msg.getData().getInt("visibility"));
+                mStatus.setText(msg.getData().getString("text"));
+            }
+        },new Handler(){
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                super.handleMessage(msg);
+                mScorePlayer.setText(msg.getData().getString("player"));
+                mSCoreOpponent.setText(msg.getData().getString("opponent"));
+            }
+        });
 
         TypedArray a = ctx.obtainStyledAttributes(attr,R.styleable.PongTable);
         int racketHeight = a.getInteger(R.styleable.PongTable_racketHeight, 340);
@@ -128,7 +152,7 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
 
     }
 
-    private void doAi(){
+    private void doAI(){
         if(mOpponent.bounds.top > mBall.cy){
             movePlayer(mOpponent,mOpponent.bounds.left,mOpponent.bounds.top - PHY_RACQUET_SPEED);
         }else if(mOpponent.bounds.top + mOpponent.getRacquetHeight() < mBall.cy){
@@ -137,12 +161,49 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     public void update(Canvas canvas){
+        // collisions code
 
+        if(new Random(System.currentTimeMillis()).nextFloat() < mAiMoveProbability)
+            doAI();
+        mBall.moveBall(canvas);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event){
-        return super.onTouchEvent(event);
+        if(!mGame.SensorsOn()) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (mGame.isBetweenBounds()) {
+                        mGame.setState(GameThread.STATE_RUNNING);
+                    } else {
+                        if (isTouchOnRacket(event, mPlayer)) {
+                            moving = true;
+                            mLastTouchY = event.getY();
+                        }
+                    }
+                    break;
+
+                case MotionEvent.ACTION_MOVE:
+                    if (moving) {
+                        float y = event.getY();
+                        float dy = y - mLastTouchY;
+                        mLastTouchY = y;
+                        movePlayerRacquet(dy, mPlayer);
+                    }
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                    moving = false;
+                    break;
+            }
+        }else {
+            if(event.getAction() == MotionEvent.ACTION_DOWN){
+                if (mGame.isBetweenBounds()){
+                    mGame.setState(GameThread.STATE_RUNNING);
+                }
+            }
+        }
+        return true;
     }
 
     private boolean isTouchOnRacket(MotionEvent event, Player mPlayer){
@@ -169,7 +230,7 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
         player.bounds.offsetTo(left,top);
     }
 
-    public void setTable(){
+    public void setupTable(){
         placeBall();
         placePlayers();
     }

@@ -1,6 +1,7 @@
 package com.jhin.pong2dgame;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -77,7 +78,47 @@ public class GameThread extends Thread{
         }
     }
 
-    public void setStae(int state){
+    public void setState(int state){
+        synchronized (mSurfaceHolder){
+            mGameSate = state;
+            Resources res = mCtx.getResources();
+            switch (mGameSate){
+                case STATE_READY:
+                    // setUpNewRound();
+                    break;
+                case STATE_RUNNING:
+                    // hideStatus();
+                    break;
+                case STATE_LOSE:
+                    // hideStatus();
+                    break;
+                case STATE_WIN:
+                    // hideStatus();
+                    break;
+                case STATE_PAUSED:
+                    // hideStatus();
+                    break;
+            }
+        }
+    }
 
+    public void setUpNewRound(){
+        synchronized (mSurfaceHolder){
+            mPongTable.setupTable();
+        }
+    }
+
+    public void setRunning(boolean running){
+        synchronized (mRunLock){
+            mRun = running;
+        }
+    }
+
+    public boolean SensorsOn(){
+        return mSensorsOn;
+    }
+
+    public boolean isBetweenBounds(){
+        return mGameSate != STATE_RUNNING;
     }
 }
