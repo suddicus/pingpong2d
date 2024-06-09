@@ -119,12 +119,16 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
 
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
-        mTablewidth = width;
+        mTableWidth = width;
         mTableHeight = height;
     }
 
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+
+    }
+
+    private void doAi(){
 
     }
 
@@ -137,7 +141,7 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
         return mPlayer.bounds.contains(event.getX(),event.getY());
     }
 
-    public void movePlayerRacquet(){
+    public void movePlayerRacquet(float dy,Player player){
 
     }
     public synchronized void movePlayer(Player player, float left, float top){
