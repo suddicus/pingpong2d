@@ -86,8 +86,8 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     @Override
-    protected void onDraw(Canvas canvas){
-        super.onDraw(canvas);
+    public void draw(Canvas canvas){
+        super.draw(canvas);
 
         canvas.drawColor(ContextCompat.getColor(mContext,R.color.table_color));
         canvas.drawRect(0,0,mTableWidth,mTableHeight,mTableBoundsPaint);
@@ -134,6 +134,10 @@ public class PongTable extends SurfaceView implements SurfaceHolder.Callback{
         }else if(mOpponent.bounds.top + mOpponent.getRacquetHeight() < mBall.cy){
             movePlayer(mOpponent,mOpponent.bounds.left,mOpponent.bounds.top + PHY_RACQUET_SPEED);
         }
+    }
+
+    public void update(Canvas canvas){
+
     }
 
     @Override
